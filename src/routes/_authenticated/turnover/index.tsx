@@ -1,0 +1,7 @@
+import { createFileRoute, redirect } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_authenticated/turnover/")({
+  beforeLoad: () => {
+    throw redirect({ to: "/turnover/visao-geral" });
+  },
+});

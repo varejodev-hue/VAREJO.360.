@@ -1,0 +1,1 @@
+DELETE FROM public.orcamentos_staging WHERE log_id='803e76f0-21f0-488d-bcff-94cfaac55dea'; DELETE FROM public.import_logs WHERE id='803e76f0-21f0-488d-bcff-94cfaac55dea';

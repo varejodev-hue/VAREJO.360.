@@ -1,0 +1,1 @@
+TRUNCATE TABLE public.clientes, public.especificadores, public.vendedores, public.lojas RESTART IDENTITY CASCADE;

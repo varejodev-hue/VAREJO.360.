@@ -1,0 +1,1 @@
+ALTER FUNCTION public.process_orcamentos_staging(uuid) SET statement_timeout = '0';

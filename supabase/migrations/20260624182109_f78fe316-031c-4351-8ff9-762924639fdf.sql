@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS orcamentos_esp_data_idx ON public.orcamentos (especificador_id, data_orcamento) INCLUDE (loja_id, vendedor_id, valor_vendido, valor_orcado) WHERE especificador_id IS NOT NULL;
