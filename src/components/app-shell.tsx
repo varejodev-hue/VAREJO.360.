@@ -99,6 +99,7 @@ const navGroups: NavGroup[] = [
 ];
 
 const COLLAPSED_KEY = "sv:sidebar-collapsed";
+const APP_BUILD_LABEL = "Build 05/07 22:50";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
@@ -365,6 +366,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="mt-1 inline-flex max-w-full items-center rounded-md border border-sidebar-border bg-sidebar-accent/55 px-1.5 py-0.5 text-[10px] font-medium text-sidebar-accent-foreground">
                   <span className="truncate">{roleLabel}</span>
                 </div>
+                <div className="mt-1 text-[9px] text-sidebar-foreground/45">{APP_BUILD_LABEL}</div>
               </div>
               <button
                 onClick={signOut}

@@ -45,7 +45,14 @@ export function OnboardingModal() {
     enabled: !!userId,
     queryKey: ["onboarding", userId],
     queryFn: async () => {
-      const { data } = await supabase.from("onboarding_status").select("*").eq("user_id", userId!).maybeSingle();
+      const { data, error } = await supabase.from("onboarding_status").select("*").eq("user_id", userId!).maybeSingle();
+      if (error) {
+        console.warn("[Varejo 360] Onboarding local ativo ate atualizar a tabela onboarding_status.", error.message);
+        return localDone(userId!)
+          ? { user_id: userId!, passo: 0, concluido: false, dispensado: true, concluido_em: null }
+          : null;
+      }
+      if (data?.concluido || data?.dispensado) markLocalDone(userId!);
       return data;
     },
   });
