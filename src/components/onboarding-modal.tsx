@@ -13,6 +13,20 @@ export function OnboardingModal() {
   const [open, setOpen] = useState(false);
   const [passo, setPasso] = useState(0);
 
+  function localKey(id: string) {
+    return `v360:onboarding:${id}`;
+  }
+
+  function localDone(id: string) {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(localKey(id)) === "done";
+  }
+
+  function markLocalDone(id: string | null | undefined) {
+    if (!id || typeof window === "undefined") return;
+    window.localStorage.setItem(localKey(id), "done");
+  }
+
   const { data: userId } = useQuery({
     queryKey: ["me-id"],
     queryFn: async () => (await supabase.auth.getUser()).data.user?.id ?? null,
@@ -38,6 +52,7 @@ export function OnboardingModal() {
 
   useEffect(() => {
     if (!userId) return;
+    if (localDone(userId)) return;
     if (status === undefined) return; // ainda carregando
     const precisa = status === null || (!status.concluido && !status.dispensado);
     if (precisa) {
@@ -68,6 +83,7 @@ export function OnboardingModal() {
   function avancar() {
     const p = passo + 1;
     if (p >= total) {
+      markLocalDone(userId);
       upsert.mutate({ passo: p, concluido: true });
       setOpen(false);
     } else {
@@ -77,6 +93,7 @@ export function OnboardingModal() {
   }
 
   function dispensar() {
+    markLocalDone(userId);
     upsert.mutate({ dispensado: true });
     setOpen(false);
   }

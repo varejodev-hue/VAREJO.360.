@@ -38,6 +38,7 @@ import { HelpTip } from "@/components/help-tip";
 import { GlobalFilters } from "@/components/global-filters";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useInactivityLogout } from "@/hooks/use-inactivity-logout";
+import { ROLE_LABEL } from "@/lib/help-content";
 
 type NavItem = {
   to: string;
@@ -157,6 +158,23 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const currentUser = useCurrentUser();
   const userId = currentUser.data?.id;
+
+  const currentRole = useQuery({
+    queryKey: ["shell-current-role", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId!)
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data?.role ?? null;
+    },
+    staleTime: 5 * 60_000,
+  });
+  const roleLabel = ROLE_LABEL[currentRole.data ?? ""] ?? "Sem perfil";
 
   const novidadesNaoLidas = useQuery({
     queryKey: ["novidades-nao-lidas", userId],
@@ -320,7 +338,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="flex flex-col items-center gap-1.5 py-1">
               <div
                 className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold ring-2 ring-sidebar-border"
-                title={email}
+                title={`${email || "Usuario"} - ${roleLabel}`}
               >
                 {(email || "?").slice(0, 1).toUpperCase()}
               </div>
@@ -343,6 +361,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <div className="flex items-center gap-1 text-[10px] text-sidebar-foreground/60">
                   <span className="h-1.5 w-1.5 rounded-full bg-[var(--status-healthy)]" />
                   Conectado
+                </div>
+                <div className="mt-1 inline-flex max-w-full items-center rounded-md border border-sidebar-border bg-sidebar-accent/55 px-1.5 py-0.5 text-[10px] font-medium text-sidebar-accent-foreground">
+                  <span className="truncate">{roleLabel}</span>
                 </div>
               </div>
               <button

@@ -74,6 +74,33 @@ pnpm build
 
 As migrations ficam em `supabase/migrations`.
 
+## Primeiro administrador
+
+Para criar o primeiro administrador sem Lovable Cloud, use um destes caminhos:
+
+1. Temporariamente configure `ALLOW_BOOTSTRAP_ADMIN=true`, entre no sistema e use a tela `/admin/usuarios`.
+2. Ou rode no Supabase SQL Editor o script:
+
+```txt
+supabase/bootstrap/00-criar-base-auth-admin.sql
+```
+
+Esse script cria a base minima de autenticacao quando o banco ainda nao tem `profiles`, `user_roles` ou `has_role`.
+
+Depois rode:
+
+```txt
+supabase/bootstrap/promover-primeiro-admin.sql
+```
+
+No script, troque `SEU_EMAIL_AQUI@EXEMPLO.COM` pelo e-mail do usuario que ja existe no Supabase Auth.
+
+Depois que o primeiro admin existir, mantenha:
+
+```env
+ALLOW_BOOTSTRAP_ADMIN=false
+```
+
 Antes de producao, revisar:
 
 - RLS por perfil e filial
